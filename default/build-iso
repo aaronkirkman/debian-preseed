@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Dependencies
 sudo apt install isolinux syslinux-utils xorriso
 
 # Usage
@@ -18,10 +19,5 @@ chmod +w md5sum.txt
 md5sum `find -follow -type f` > md5sum.txt
 cd ..
 
-
 xorriso -as mkisofs -o preseed.iso -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -c isolinux/boot.cat -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table iso
 
-
-
-mv preseed.iso ~/Virtualization/preseed/ -v
-sudo rm -rf iso/
