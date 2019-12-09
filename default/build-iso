@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+sudo apt install isolinux syslinux-utils xorriso
+
+# Usage
+mkdir iso
+xorriso -osirrox on -indev debian-10.2.0-amd64-netinst.iso -extract / iso/
+
+chmod +w -R iso/install.amd/
+gunzip iso/install.amd/initrd.gz
+echo preseed.cfg | cpio -H newc -o -A -F iso/install.amd/initrd
+echo sources.list | cpio -H newc -o -A -F iso/install.amd/initrd
+gzip iso/install.amd/initrd
+chmod -w -R iso/install.amd/
+
+cd iso/
+chmod +w md5sum.txt
+md5sum `find -follow -type f` > md5sum.txt
+cd ..
+
+
+xorriso -as mkisofs -o preseed.iso -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin -c isolinux/boot.cat -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table iso
+
+
+
+mv preseed.iso ~/Virtualization/preseed/ -v
+sudo rm -rf iso/
